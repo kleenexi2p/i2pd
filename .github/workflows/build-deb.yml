@@ -7,31 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [debian, ubuntu]
-        include:
-          # Debian releases
-          - os: debian
-            dist: buster
-            suffix: -slim
-          - os: debian
-            dist: bullseye
-            suffix: -slim
-          - os: debian
-            dist: bookworm
-            suffix: -slim
-          # Ubuntu releases
-          - os: ubuntu
-            dist: trusty
-          - os: ubuntu
-            dist: xenial
-          - os: ubuntu
-            dist: bionic
-          - os: ubuntu
-            dist: focal
-          - os: ubuntu
-            dist: jammy
-          - os: ubuntu
-            dist: kinetic
+        image: [{os: debian, dist: [buster, bullseye, bookworm], suffix: -slim}, {os: ubuntu, dist: [trusty, xenial, bionic, focal, jammy, jammy, kinetic]}]
     steps:
     - uses: actions/checkout@v2
       with:
@@ -40,19 +16,19 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install devscripts
-        debchange -v "`git describe --tags`-${{ matrix.dist }}" -b -M --distribution ${{ matrix.dist }} "trunk build"
+        debchange -v "`git describe --tags`-${{ matrix.image.dist }}" -b -M --distribution ${{ matrix.image.dist }} "trunk build"
     - name: Building package
       uses: jtdor/build-deb-action@v1
       with:
-        docker-image: ${{ matrix.os }}:${{ matrix.dist }}${{ matrix.suffix }}
+        docker-image: ${{ matrix.image.os }}:${{ matrix.image.dist }}${{ matrix.image.suffix }}
         buildpackage-opts: --build=binary --no-sign
     - name: Uploading package to artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: i2pd_${{ matrix.dist }}
+        name: i2pd_${{ matrix.image.dist }}
         path: debian/artifacts/i2pd_*.deb
     - name: Uploading debug symbols to artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: i2pd-dbgsym_${{ matrix.dist }}
+        name: i2pd-dbgsym_${{ matrix.image.dist }}
         path: debian/artifacts/i2pd-dbgsym_*.deb
