@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dist: [buster, bullseye, bookworm, trusty, xenial, bionic, focal, jammy, kinetic]
+        dist: [buster, bullseye, bookworm, bionic, focal, jammy, kinetic]
         include:
         # Debian releases
         - dist: buster
@@ -17,10 +17,6 @@ jobs:
         - dist: bookworm
           os: debian
         # Ubuntu releases
-        - dist: trusty
-          os: ubuntu
-        - dist: xenial
-          os: ubuntu
         - dist: bionic
           os: ubuntu
         - dist: focal
