@@ -8,7 +8,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dist: ['buster', 'bullseye', 'bookworm']
+        include:
+          - os: debian
+            dist: [buster, bullseye, bookworm]
+            suffix: ['-slim']
+          - os: ubuntu
+            dist: [trusty, xenial, bionic, focal, jammy, kinetic]
     steps:
     - uses: actions/checkout@v2
       with:
@@ -20,7 +25,7 @@ jobs:
         debchange -v "`git describe --tags`-${{ matrix.dist }}" -b -M --distribution ${{ matrix.dist }} "trunk build"
     - uses: jtdor/build-deb-action@v1
       with:
-        docker-image: debian:${{ matrix.dist }}-slim
+        docker-image: ${{ matrix.os }}:${{ matrix.dist }}${{ matrix.suffix }}
         buildpackage-opts: --build=binary --no-sign
     - uses: actions/upload-artifact@v3
       with:
