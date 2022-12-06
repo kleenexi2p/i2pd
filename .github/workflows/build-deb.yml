@@ -9,9 +9,25 @@ jobs:
       matrix:
         dist: [buster, bullseye, bookworm, trusty, xenial, bionic, focal, jammy, kinetic]
         include:
-        - dist: [buster, bullseye, bookworm]
+        # Debian releases
+        - dist: buster
           os: debian
-        - dist: [trusty, xenial, bionic, focal, jammy, kinetic]
+        - dist: bullseye
+          os: debian
+        - dist: bookworm
+          os: debian
+        # Ubuntu releases
+        - dist: trusty
+          os: ubuntu
+        - dist: xenial
+          os: ubuntu
+        - dist: bionic
+          os: ubuntu
+        - dist: focal
+          os: ubuntu
+        - dist: jammy
+          os: ubuntu
+        - dist: kinetic
           os: ubuntu
     steps:
     - uses: actions/checkout@v2
